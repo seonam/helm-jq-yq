@@ -1,20 +1,27 @@
-# syntax=docker/dockerfile:experimental
-FROM --platform=$TARGETPLATFORM alpine:3.21
+FROM --platform=$BUILDPLATFORM debian:bookworm-slim
 
-# helm version
+ARG BUILDPLATFORM
+RUN echo "asdf"
+RUN echo "$BUILDPLATFORM"
+
 ARG HELM_VERSION=3.18.6
 
-# helm, jq, yq
-RUN apk add --no-cache curl jq yq bash ca-certificates && \
-    case "$(uname -m)" in \
-        x86_64) ARCH=amd64 ;; \
-        aarch64) ARCH=arm64 ;; \
-        *) echo "Unsupported architecture"; exit 1 ;; \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      curl \
+      ca-certificates \
+      jq \
+      yq \
+      bash && \
+    rm -rf /var/lib/apt/lists/* && \
+    case "$BUILDPLATFORM" in \
+      "linux/amd64") ARCH=amd64 ;; \
+      "linux/arm64") ARCH=arm64 ;; \
+      *) echo "Unsupported architecture: $TARGETPLATFORM"; exit 1 ;; \
     esac && \
     curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCH}.tar.gz" | \
-    tar -xz --strip-components=1 -C /usr/local/bin linux-${ARCH}/helm && \
+      tar -xz --strip-components=1 -C /usr/local/bin linux-${ARCH}/helm && \
     chmod +x /usr/local/bin/helm
 
 WORKDIR /app
 CMD ["bash"]
-
