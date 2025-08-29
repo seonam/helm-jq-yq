@@ -6,12 +6,20 @@ docker buildx build \
   -t helm:3.18.6-jq-yq-arm64 \
   --load -f Dockerfile-arch .
 
+
+docker buildx build \
+  --platform linux/amd64 \
+  -t helm:3.18.6-jq-yq-amd64 \
+  --load -f Dockerfile-arch .
+
 # 2. tar
-docker save -o helm-arm64.tar helm:3.18.6-jq-yq-arm64
+docker save -o helm-arm64-load.tar helm:3.18.6-jq-yq-arm64
+docker save -o helm-amd64-load.tar helm:3.18.6-jq-yq-amd64
 
 ...
 # 3. load
-docker load i helm-arm64.tar
+docker load -i helm-arm64-load.tar
+docker load -i helm-amd64-load.tar
 ```
 
 
@@ -20,12 +28,12 @@ docker load i helm-arm64.tar
 # docker 는 단일만 지원
 docker buildx build \
   --platform linux/arm64 \
-  --output type=docker,dest=helm-arm64.tar \
+  --output type=docker,name=helm:3.18.6-jq-yq-arm64,dest=helm-arm64-docker.tar \
   -f Dockerfile-arch .
 
 docker buildx build \
   --platform linux/amd64 \
-  --output type=docker,dest=helm-amd64.tar \
+  --output type=docker,name=helm:3.18.6-jq-yq-amd64,dest=helm-amd64-docker.tar \
   -f Dockerfile-arch .
 
 # oci 는 멀티 가능
