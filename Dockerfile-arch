@@ -1,27 +1,22 @@
-FROM --platform=$BUILDPLATFORM debian:bookworm-slim
+FROM alpine:3.21
 
-ARG BUILDPLATFORM
-RUN echo "asdf"
-RUN echo "$BUILDPLATFORM"
-
+ARG TARGETPLATFORM
 ARG HELM_VERSION=3.18.6
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      curl \
-      ca-certificates \
-      jq \
-      yq \
-      bash && \
-    rm -rf /var/lib/apt/lists/* && \
-    case "$BUILDPLATFORM" in \
+RUN echo "$TARGETPLATFORM"
+
+RUN apk add --no-cache curl jq yq bash ca-certificates && \
+    ARCH=amd64 && \
+    case "$TARGETPLATFORM" in \
       "linux/amd64") ARCH=amd64 ;; \
       "linux/arm64") ARCH=arm64 ;; \
       *) echo "Unsupported architecture: $TARGETPLATFORM"; exit 1 ;; \
     esac && \
     curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCH}.tar.gz" | \
-      tar -xz --strip-components=1 -C /usr/local/bin linux-${ARCH}/helm && \
+    tar -xz --strip-components=1 -C /usr/local/bin linux-${ARCH}/helm && \
     chmod +x /usr/local/bin/helm
 
 WORKDIR /app
+
 CMD ["bash"]
+
