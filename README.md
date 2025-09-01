@@ -53,7 +53,7 @@ docker run -it helm:3.18.6-jq-yq-amd64-docker # amd 에서 가능
 
 
 #### type=oci
-- multipass 환경에서 다시 테스트 필요. docker load 시 아래 에러 발생.
+- multipass 환경에서 다시 테스트 필요(snap docker vs docker.io). docker load 시 아래 에러 발생.
   - open /var/snap/docker/common/var-lib-docker/tmp/docker-import-2780373436/blobs/json: no such file or directory
 ```
 # 1. 빌드
