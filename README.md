@@ -60,7 +60,7 @@ docker run -it helm:3.18.6-jq-yq-amd64-docker # amd 에서 가능
 # oci 는 멀티 가능
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --output type=oci,name=helm:3.18.6-jq-yq-amd64-oci,dest=helm-oci.tar \
+  --output type=oci,name=helm:3.18.6-jq-yq-oci,dest=helm-oci.tar \
   -f Dockerfile-arch .
 
 # 2. load
