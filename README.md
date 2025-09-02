@@ -2,7 +2,13 @@
 - 이미지 빌드 환경: macos(arm64) / ubuntu on multipass
 - 이미지 실행 환경: linux(amd64)
 
+#### Required
+```
+docker buildx create --use
+```
+
 #### type=load
+
 ```
 # 1. 빌드
 docker buildx build \
@@ -53,8 +59,11 @@ docker run -it helm:3.18.6-jq-yq-amd64-docker # amd 에서 가능
 
 
 #### type=oci
-- multipass 환경에서 다시 테스트 필요(snap docker vs docker.io). docker load 시 아래 에러 발생.
+- snap docker vs docker.io: snap docker 에서 docker load 시 아래 에러 발생.
   - open /var/snap/docker/common/var-lib-docker/tmp/docker-import-2780373436/blobs/json: no such file or directory
+- docker.io 로 설치 시 정상 동작
+  - https://www.lainyzine.com/ko/article/how-to-install-docker-on-linux/
+
 ```
 # 1. 빌드
 # oci 는 멀티 가능
@@ -67,7 +76,7 @@ docker buildx build \
 docker load -i helm-oci.tar  # amd 실행 가능.
 
 # 3. run
-docker run -it helm:3.18.6-jq-yq-arm64-oci # amd 에서 가능.
+docker run -it helm:3.18.6-jq-yq-arm64-oci # 둘 다 가능.
 ```
 
 #### type=push (테스트 필요)
